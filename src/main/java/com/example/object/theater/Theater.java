@@ -1,4 +1,4 @@
-package com.example.object;
+package com.example.object.theater;
 
 public class Theater {
     private TicketSeller ticketSeller;
