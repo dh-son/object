@@ -7,53 +7,18 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Phone {
+public class Phone extends AbstractPhone{
     private Money amount;
     private Duration seconds;
-    private List<Call> calls = new ArrayList<>();
-    private double taxRate;
 
     public Phone(Money amount, Duration seconds, double taxRate) {
+        super(taxRate);
         this.amount = amount;
         this.seconds = seconds;
-        this.taxRate = taxRate;
     }
 
-    public void call(Call call) {
-        calls.add(call);
-    }
-
-    public List<Call> getCalls() {
-        return calls;
-    }
-
-    public Money getAmount() {
-        return amount;
-    }
-
-    public Duration getSeconds() {
-        return seconds;
-    }
-
-    public Money calculateFee() {
-        Money result = Money.ZERO;
-
-        for (Call call : calls) {
-            result = result.plus(amount.times(call.getDuration().getSeconds() / seconds.getSeconds()));
-        }
-
-        return result.plus(result.times(taxRate));
-    }
-
-    public static void main(String[] args) {
-        Phone phone = new Phone(Money.wons(5), Duration.ofSeconds(10), 0.1);
-
-        phone.call(new Call(LocalDateTime.of(2018, 1, 1, 12, 10, 0),
-                LocalDateTime.of(2018, 1, 1, 12, 11, 0)));
-
-        phone.call(new Call(LocalDateTime.of(2018, 1, 2, 12, 10, 0),
-                LocalDateTime.of(2018, 1, 2, 12, 11, 0)));
-
-        Money fee = phone.calculateFee();
+    @Override
+    protected Money calculateCallFee(Call call) {
+        return amount.times(call.getDuration().getSeconds() / seconds.getSeconds());
     }
 }
